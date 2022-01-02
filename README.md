@@ -1,1 +1,1 @@
-# TT-lab-OSX-Bootstrap
+# TT•lab OSX Bootstrap Script
