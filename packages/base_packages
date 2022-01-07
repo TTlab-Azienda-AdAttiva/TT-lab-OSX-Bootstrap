@@ -1,0 +1,27 @@
+PACKAGES=(
+    bzip2
+    nano
+    git
+    svn
+    ccache
+    mas
+    speedtest-cli
+    zsh
+)
+
+CASKS=(
+    Onyx
+    fliqlo
+    grid-clock
+    rectangle
+    iina
+)
+
+APPSTORE=(
+    Microsoft Word
+    Microsoft Excel
+    Microsoft PowerPoint
+    hush
+    Reopen in Private
+    Speedtest
+)

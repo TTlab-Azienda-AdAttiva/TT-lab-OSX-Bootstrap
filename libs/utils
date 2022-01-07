@@ -1,0 +1,90 @@
+### Colors Variables ###
+ESC=$(printf '\033')
+RESET="${ESC}[0m"
+BLACK="${ESC}[30m"
+RED="${ESC}[31m"
+GREEN="${ESC}[32m"
+YELLOW="${ESC}[33m"
+BLUE="${ESC}[34m"
+MAGENTA="${ESC}[35m"
+CYAN="${ESC}[36m"
+WHITE="${ESC}[37m"
+DEFAULT="${ESC}[39m"
+
+### Init ###
+InitDocuments()
+{
+    if [ ! -d ~/Documents/Privata ]
+    then
+        Message "Creo Cartella Privata"
+        mkdir ~/Documents/Privata
+    fi
+    if [ ! -d ~/Documents/Privata/Chiavi\ Ssh ]
+    then
+        Message "Cartella Chiavi Ssh in Cartella Privata..."
+        mkdir ~/Documents/Privata/Chiavi\ Ssh
+    fi
+    Message "Cartella Documenti impostata..."
+}
+
+InitSsh()
+{
+    if [ ! -d ~/.ssh ]
+    then
+        Message "Creo Cartella Ssh..."
+        mkdir ~/.ssh
+        mkdir ~/.ssh/socket/
+        sudo chmod 700 ~/.ssh
+    fi
+    Message "Cartella Ssh impostata..."
+}
+
+InitSskKeys()
+{
+    if [ ! -f ~/.ssh/id_ed25519 ] && [ ! -f ~/.ssh/id_ed25519.pub ]
+    then
+        Message "Creo Chiave Ssh Ed25519..."
+        ssh-keygen -t ed25519
+        mv ~/.ssh/id_ed25519 ~/Documents/Privata/Chiavi\ Ssh/id_ed25519
+        mv ~/.ssh/id_ed25519.pub ~/Documents/Privata/Chiavi\ Ssh/id_ed25519.pub
+        ln -s ~/Documents/Privata/Chiavi\ Ssh/id_ed25519 ~/.ssh/id_ed25519
+        ln -s ~/Documents/Privata/Chiavi\ Ssh/id_ed25519.pub ~/.ssh/id_ed25519.pub
+    fi
+    if [ ! -f ~/.ssh/id_rsa ] && [ ! -f ~/.ssh/id_rsa.pub ]
+    then
+        Message "Creo Chiave Ssh.RSA.."
+        ssh-keygen -t rsa -b 4096
+        mv ~/.ssh/id_rsa ~/Documents/Privata/Chiavi\ Ssh/id_rsa
+        mv ~/.ssh/id_rsa.pub ~/Documents/Privata/Chiavi\ Ssh/id_rsa.pub
+        ln -s ~/Documents/Privata/Chiavi\ Ssh/id_rsa ~/.ssh/id_rsa
+        ln -s ~/Documents/Privata/Chiavi\ Ssh/id_rsa.pub ~/.ssh/id_rsa.pub
+    fi
+}
+
+InitHomeBrew()
+{
+if test ! $(which brew); then
+    Message "Installo homebrew..."
+    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+fi
+
+Message "Aggiorno elenco pacchetti homebrew..."
+brew update
+
+Message "Aggiorno pacchetti homebrew installati..."
+brew upgrade
+}
+
+InitBasedotFiles()
+{
+    cp ./dotfiles/nanorc 
+}
+
+InstallAppStore()
+{
+    for app in $1;
+    do
+        MAS lucky $app 
+    done
+    
+}

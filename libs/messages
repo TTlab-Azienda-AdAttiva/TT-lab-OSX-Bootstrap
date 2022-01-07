@@ -1,0 +1,33 @@
+### Help ###
+Help()
+{
+   # Display Help
+   echo
+   echo -e "Add description of the script functions here."
+   echo
+   echo -e "Syntax: Bootstrap.sh [-b|c|d|h]"
+   echo -e "options:"
+   echo -e "-h    Visualizza questo Help."
+   echo -e "-b    Booststrap Base"
+   echo -e "-c    Booststrap Commerciale/Marketing"
+   echo -e "-d    Booststrap Sviluppatore"
+   echo
+}
+
+### Messages ###
+TitleMSG()
+{
+    echo
+    echo -e $RESET"### "$GREEN"TT"$WHITE"•"$GREEN"lab"$RESET" OSX Bootstrap Script ###"
+    echo
+}
+
+Message()
+{
+    echo -e $RESET$YELLOW"==> "$GREEN$1$RESET
+}
+
+ErrorMessage()
+{
+    echo -e $RESET$YELLOW"==> "$RED$1$RESET
+}
