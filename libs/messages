@@ -9,8 +9,6 @@ Help()
    echo -e "options:"
    echo -e "-h    Visualizza questo Help."
    echo -e "-b    Booststrap Base"
-   echo -e "-c    Booststrap Commerciale/Marketing"
-   echo -e "-d    Booststrap Sviluppatore"
    echo
 }
 

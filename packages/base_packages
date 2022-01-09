@@ -6,11 +6,13 @@ PACKAGES=(
     ccache
     mas
     speedtest-cli
+    tmux
     zsh
 )
 
 CASKS=(
     Onyx
+    appcleaner
     fliqlo
     grid-clock
     rectangle
@@ -18,10 +20,20 @@ CASKS=(
 )
 
 APPSTORE=(
-    Microsoft Word
-    Microsoft Excel
-    Microsoft PowerPoint
-    hush
-    Reopen in Private
-    Speedtest
+    "Microsoft Word"
+    "Microsoft Excel"
+    "Microsoft PowerPoint"
+    "hush"
+    "Reopen in Private"
+    "Speedtest"
+    "Spark"
+    "NordVPN"
+    "Amphetamine"
+    "DaisyDisk"
+)
+
+APPSTORETOREMOVE=(
+    "Keynote"
+    "Numbers"
+    "Pages"
 )

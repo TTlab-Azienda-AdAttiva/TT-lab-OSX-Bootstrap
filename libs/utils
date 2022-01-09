@@ -82,9 +82,10 @@ InitBasedotFiles()
 
 InstallAppStore()
 {
-    for app in $1;
-    do
-        MAS lucky $app 
-    done
-    
+    mas install $(mas search $1 | head -n1 | xargs | cut -f 1 -d" ")
+}
+
+UnInstallAppStore()
+{
+    sudo mas uninstall $(mas search $1 | head -n1 | xargs | cut -f 1 -d" ")
 }

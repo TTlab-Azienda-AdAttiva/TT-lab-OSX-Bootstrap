@@ -31,10 +31,6 @@ BOOTSTRAP_MODE=""
 case $1 in
     -b) # Base
         BOOTSTRAP_MODE="Base";;
-    -c) # Marketing
-        BOOTSTRAP_MODE="Commerciale";;
-    -d) # Developer
-        BOOTSTRAP_MODE="Sviluppatore";;
     -h) # display Help
         Help
         exit;;
@@ -70,13 +66,15 @@ Message "Installo i Font FiraCode Nerd..."
 brew install --cask font-fira-code-nerd-font
 
 Message "Installo le App di base..."
-InstallAppStore ${APPSTORE[@]}
+for app in ${APPSTORE[@]};
+do
+    InstallAppStore $app
+done
 
-case $BOOTSTRAP_MODE in
-    Commerciale)
-        Message "Avvio Bootstrap $BOOTSTRAP_MODE...";;
-    Sviluppatore)
-        Message "Avvio Bootstrap $BOOTSTRAP_MODE...";;
-esac
+# Message "Rimuovo le App di base..."
+# for app in ${APPSTORETOREMOVE[@]};
+# do
+#     UnInstallAppStore $app
+# done
 
-Message "OSX bootstrapping done!"
+Message "OSX Base bootstrapping done!"
