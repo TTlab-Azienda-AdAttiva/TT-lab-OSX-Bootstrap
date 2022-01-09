@@ -56,7 +56,7 @@ InitHomeBrew
 
 Message "Installo i pacchetti Base..."
 brew install ${PACKAGES[@]}
-sudo -u $SUDO_USER brew install --cask ${CASKS[@]}
+# sudo -u $SUDO_USER brew install --cask ${CASKS[@]}
 
 Message "Preparo i Font di defautl di sistema ..."
 brew tap homebrew/cask-fonts

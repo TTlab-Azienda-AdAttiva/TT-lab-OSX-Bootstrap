@@ -1,5 +1,6 @@
 PACKAGES=(
     bzip2
+    curl
     nano
     git
     svn
@@ -15,11 +16,10 @@ CASKS=(
     appcleaner
     fliqlo
     grid-clock
-    rectangle
-    iina
 )
 
 APPSTORE=(
+    "1Password"
     "Microsoft Word"
     "Microsoft Excel"
     "Microsoft PowerPoint"
