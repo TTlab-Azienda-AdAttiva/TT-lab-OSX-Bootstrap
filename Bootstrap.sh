@@ -4,7 +4,7 @@ set -o errexit
 set -o nounset
 set -o pipefail
 
-REPO_URL="git@github.com:ttlab-development-code/TT-lab-OSX-dotfiles.git"
+REPO_URL="git@github.com:TTlab-Azienda-AdAttiva/TT-lab-OSX-dotfiles.git"
 REPO_PATH="$HOME/Documents/Privata/dotfiles"
 
 # Loading librearies
