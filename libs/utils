@@ -11,41 +11,58 @@ CYAN="${ESC}[36m"
 WHITE="${ESC}[37m"
 DEFAULT="${ESC}[39m"
 
-### Init ###
-InitDocuments()
+### Start ###
+start()
 {
+  title
+  sudo --validate
+}
+
+### Init ###
+documents()
+{
+    if [ ! -d ~/Documents/Istantanee ]
+    then
+        info "Creo Cartella Istantanee"
+        mkdir ~/Documents/Istantanee
+    fi
     if [ ! -d ~/Documents/Privata ]
     then
-        Message "Creo Cartella Privata"
+        info "Creo Cartella Privata"
         mkdir ~/Documents/Privata
     fi
     if [ ! -d ~/Documents/Privata/Chiavi\ Ssh ]
     then
-        Message "Cartella Chiavi Ssh in Cartella Privata..."
+        info "Cartella Chiavi Ssh in Cartella Privata..."
         mkdir ~/Documents/Privata/Chiavi\ Ssh
     fi
-    Message "Cartella Documenti impostata..."
+    if [ ! -d ~/Documents/Privata/Configurazioni ]
+    then
+        info "Cartella Configurazioni in Cartella Privata..."
+        mkdir ~/Documents/Privata/Configurazioni
+    fi
+    info "Cartella Documenti impostata..."
 }
 
-InitSsh()
+initssh()
 {
     if [ ! -d ~/.ssh ]
     then
-        Message "Creo Cartella Ssh..."
+        info "Creo Cartella Ssh..."
         mkdir ~/.ssh
-        mkdir ~/.ssh/socket/
+        mkdir ~/.ssh/sockets/
         sudo chmod 700 ~/.ssh
     fi
-    Message "Cartella Ssh impostata..."
+    info "Cartella Ssh impostata..."
 }
 
-InitSskKeys()
+initsskeys()
 {
     if [ ! -f ~/.ssh/id_ed25519 ] && [ ! -f ~/.ssh/id_ed25519.pub ]
     then
         if [ ! -f ~/Documents/Privata/Chiavi\ Ssh/id_ed25519 ] && [ ! -f ~/Documents/Privata/Chiavi\ Ssh/id_ed25519.pub ]
         then
-            Message "Creo Chiave Ssh Ed25519..."
+            info "Creo Chiave Ssh Ed25519..."
             ssh-keygen -t ed25519
             mv ~/.ssh/id_ed25519 ~/Documents/Privata/Chiavi\ Ssh/id_ed25519
             mv ~/.ssh/id_ed25519.pub ~/Documents/Privata/Chiavi\ Ssh/id_ed25519.pub
@@ -57,7 +74,7 @@ InitSskKeys()
     then
         if [ ! -f ~/Documents/Privata/Chiavi\ Ssh/id_rsa ] && [ ! -f ~/Documents/Privata/Chiavi\ Ssh/id_rsa.pub ]
         then
-            Message "Creo Chiave Ssh.RSA.."
+            info "Creo Chiave Ssh.RSA.."
             ssh-keygen -t rsa -b 4096
             mv ~/.ssh/id_rsa ~/Documents/Privata/Chiavi\ Ssh/id_rsa
             mv ~/.ssh/id_rsa.pub ~/Documents/Privata/Chiavi\ Ssh/id_rsa.pub
@@ -67,31 +84,211 @@ InitSskKeys()
     fi
 }
 
-InitHomeBrew()
+initxcode() {
+  if xcode-select -p > /dev/null; then
+    warn "xCode Command Line Tools already installed"
+  else
+    info "Installing xCode Command Line Tools..."
+    xcode-select --install
+    sudo xcodebuild -license accept
+  fi
+}
+
+inithomebrew()
 {
 if test ! $(which brew); then
-    Message "Installo homebrew..."
+    info "Installo homebrew..."
+    sudo --validate
     /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+else
+    warn "HomeBrew already installed"
 fi
 
-Message "Aggiorno elenco pacchetti homebrew..."
+info "Aggiorno elenco pacchetti homebrew..."
 brew update
 
-Message "Aggiorno pacchetti homebrew installati..."
+info "Aggiorno pacchetti homebrew installati..."
 brew upgrade
 }
 
-InitBasedotFiles()
+initdotfiles()
 {
-    cp ./dotfiles/nanorc 
+    if [ ! -f /opt/homebrew/bin/git ]
+    then
+      info "Installo Git..."
+      brew install git
+    else
+      warn "Git già installato"
+    fi
+    if [ ! -f ~/.gitconfig ]
+    then
+      info "Copia .gitconfig di default"
+      cp ~/Documents/Privata/dotfiles/gitconfig ~/Documents/Privata/Configurazioni/gitconfig
+      ln -s ~/Documents/Privata/Configurazioni/gitconfig ~/.gitconfig
+      echo -n "Inserire nome utente per git: "
+      read username
+      git config --global user.name $username
+      echo -n "Inserire e-mail per git: "
+      read email
+      git config --global user.email $email
+    else
+      warn "File .gitconfig già impostato"
+    fi
+
+    if [ ! -d $REPO_PATH ]
+    then
+      info "Clono dotfiles repo da $REPO_URL a $REPO_PATH"
+      git clone "$REPO_URL" "$REPO_PATH"
+    else
+      warn "Cartella dotfiles già impostata"
+    fi
+
+    if [ ! -f ~/.nanorc ]
+    then
+      info "Copia .nanorc di default"
+      cp ~/Documents/Privata/dotfiles/nanorc ~/Documents/Privata/Configurazioni/nanorc
+      ln -s ~/Documents/Privata/Configurazioni/nanorc ~/.nanorc
+    else
+      warn "File .nanorc già impostato"
+    fi
+
+    if [ ! -f ~/.zprofile ]
+    then
+      info "Copia .zshprofile di default"
+      cp ~/Documents/Privata/dotfiles/zshprofile ~/Documents/Privata/Configurazioni/zshprofile
+      ln -s ~/Documents/Privata/Configurazioni/zshprofile ~/.zshprofile
+    else
+      warn "File .zshprofile già impostato"
+    fi
 }
 
-InstallAppStore()
-{
-    mas install $(mas search $1 | head -n1 | xargs | cut -f 1 -d" ")
+apply_brew_taps() {
+  local tap_packages=$*
+  for tap in $tap_packages; do
+    if brew tap | grep "$tap" > /dev/null; then
+      warn "Tap $tap is already applied"
+    else
+      brew tap "$tap"
+    fi
+  done
 }
 
-UnInstallAppStore()
+install_brew_formulas() {
+  local formulas=$*
+  for formula in $formulas; do
+    if brew list --formula | grep "$formula" > /dev/null; then
+      warn "Formula $formula is already installed"
+    else
+      info "Installing package < $formula >"
+      brew install "$formula"
+    fi
+  done
+}
+
+install_brew_casks() {
+  local casks=$*
+  for cask in $casks; do
+    if brew list --casks | grep "$cask" > /dev/null; then
+      warn "Cask $cask is already installed"
+    else
+      info "Installing cask < $cask >"
+      brew install --cask "$cask"
+    fi
+  done
+}
+
+###
+install_packages() {
+  info "Configuring taps"
+  apply_brew_taps "${TAPS[@]}"
+
+  info "Installing packages..."
+  install_brew_formulas "${PACKAGES[@]}"
+
+  info "Installing base casks..."
+  install_brew_casks "${CASKS[@]}"
+
+  info "Cleaning up brew packages..."
+  brew cleanup
+}
+
+### Fonts
+install_fonts() {
+  info "Installing fonts..."
+  brew tap homebrew/cask-fonts
+  install_brew_casks "${FONTS[@]}"
+  info "Installing fonts from folder..."
+  cp -a ./fonts/* ~/Library/Fonts
+}
+
+### zsh
+
+install_oh_my_zsh() {
+  info "Imposto ZSH come default shell..."
+  sudo chsh -s $(which zsh)
+
+  if [ ! -f ~/.zshrc ]
+  then
+    info "Installo oh my zsh..."
+    ZSH=~/.oh-my-zsh ZSH_DISABLE_COMPFIX=true sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+
+    chmod 744 ~/.oh-my-zsh/oh-my-zsh.sh
+  else
+    warn "oh-my-zsh is already installed"
+  fi
+
+  if [ ! -d ~/.oh-my-zsh/custom/plugins/zsh-autosuggestions ]
+  then
+    info "Installo zsh-autosuggestions..."
+    git clone --depth=1 https://github.com/zsh-users/zsh-autosuggestions ~/.oh-my-zsh/custom/plugins/zsh-autosuggestions
+  else
+    warn "zsh-autosuggestions is already installed"
+  fi
+
+  if [ ! -d ~/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting ]
+  then
+    info "Installo zsh-syntax-highlighting..."
+    git clone --depth=1 https://github.com/zsh-users/zsh-syntax-highlighting.git ~/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting
+  else
+    warn "zsh-syntax-highlighting is already installed"
+  fi
+
+  if [ ! -d ~/.oh-my-zsh/custom/plugins/zsh-completions ]
+  then
+    info "Installo zsh-completions..."
+    git clone --depth=1 https://github.com/zsh-users/zsh-completions ~/.oh-my-zsh/custom/plugins/zsh-completions
+  else
+    warn "zsh-completions is already installed"
+  fi
+
+  if [ ! -d ~/.oh-my-zsh/custom/themes/powerlevel10k ]
+  then
+    info "Installo powerlevel10k..."
+    git clone --depth=1 https://github.com/romkatv/powerlevel10k.git ~/.oh-my-zsh/custom/themes/powerlevel10k
+  else
+    warn "powerlevel10k is already installed"
+  fi
+}
+
+
+install_apps() {
+  info "List MacOS apps to update..."
+  mas outdated
+  info "Upgrade MacOS apps to update..."
+  mas upgrade
+  info "Installing MacOS apps..."
+  install_macos_apps "${MACOSAPPS[@]}"
+}
+
+install_macos_apps()
 {
-    sudo mas uninstall $(mas search $1 | head -n1 | xargs | cut -f 1 -d" ")
+  local apps=$*
+  for app in $apps; do
+    if mas list | grep "$app" > /dev/null; then
+      warn "$app - $(mas info $app | head -n 1) is already installed"
+    else
+      info "Installing package < $app - $(mas info $app | head -n 1) >"
+      mas install $app
+    fi
+  done
 }

@@ -1,39 +1,62 @@
+TAPS=(
+  homebrew/cask
+  homebrew/cask-fonts
+  homebrew/core
+)
+
 PACKAGES=(
     bzip2
-    curl
-    nano
-    git
-    svn
     ccache
+    curl
+    duti
+    fzf
+    gnupg
+    hping
+    iperf3
+    jpeg
+    jpeg-turbo
     mas
-    speedtest-cli
+    nano
+    openssl
+    readline
+    sevenzip
+    sqlite3
     tmux
+    trash
+    xz
+    zlib
     zsh
 )
 
 CASKS=(
-    Onyx
-    appcleaner
     fliqlo
     grid-clock
 )
 
-APPSTORE=(
-    "1Password"
-    "Microsoft Word"
-    "Microsoft Excel"
-    "Microsoft PowerPoint"
-    "hush"
-    "Reopen in Private"
-    "Speedtest"
-    "Spark"
-    "NordVPN"
-    "Amphetamine"
-    "DaisyDisk"
+FONTS=(
+  font-3270-nerd-font
+  font-caskaydia-cove-nerd-font
+  font-consolas-for-powerline
+  font-fira-code-nerd-font
+  font-lato
+  font-menlo-for-powerline
+  font-meslo-lg-dz
+  font-meslo-lg-nerd-font
 )
 
-APPSTORETOREMOVE=(
-    "Keynote"
-    "Numbers"
-    "Pages"
+MACOSAPPS=(
+    "1333542190"  # 1Password 7
+    "462054704"   # Microsoft Word
+    "462058435"   # Microsoft Excel
+    "462062816"   # Microsoft PowerPoint
+    "1295203466"  # Microsoft Remote Desktop
+    "1544743900"  # Hush
+    "1147396723"  # WhatsApp
+    "747648890"   # Telegram
+    "937984704"   # Amphetamine
+    "905953485"   # NordVPN
+    "1176895641"  # Spark
+    "1153157709"  # Speedtest by Ookla
+    "411643860"   # DaisyDisk
+    "1586156147"  # Reopen in Private
 )

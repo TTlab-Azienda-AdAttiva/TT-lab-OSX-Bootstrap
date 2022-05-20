@@ -13,19 +13,29 @@ Help()
 }
 
 ### Messages ###
-TitleMSG()
+wait_input() 
+{
+  read -p "Press enter to continue: "
+}
+
+title()
 {
     echo
     echo -e $RESET"### "$GREEN"TT"$WHITE"•"$GREEN"lab"$RESET" OSX Bootstrap Script ###"
     echo
 }
 
-Message()
+info()
 {
     echo -e $RESET$YELLOW"==> "$GREEN$1$RESET
 }
 
-ErrorMessage()
+warn()
+{
+    echo -e $RESET$YELLOW"==> "$MAGENTA$1$RESET
+}
+
+error()
 {
     echo -e $RESET$YELLOW"==> "$RED$1$RESET
 }
